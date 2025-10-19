@@ -71,7 +71,7 @@ def render(conn, user_row):
                     INSERT INTO food_logs(
                         username, dt, meal, food_name, grams, kcal, protein, carbs, fat, sugars, fiber, sodium, salt
                     )
-                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)
                 """, (
                     username, picked_date.isoformat(), meal_sel, rowf.get('name','Unknown'), grams,
                     vals.get("kcal",0), vals.get("protein",0), vals.get("carbs",0), vals.get("fat",0),
