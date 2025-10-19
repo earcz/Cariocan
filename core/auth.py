@@ -44,7 +44,7 @@ def login_register_ui(conn):
         else:
             try:
                 conn.execute("""INSERT INTO users(username, pw_hash, lang, fdc_key, created_at)
-                                VALUES(?,?,?,?,?,?)""",
+                                VALUES(?,?,?,?,?)""",
                              (ru, hash_pw(rp), "en", DEFAULT_FDC, datetime.utcnow().isoformat()))
                 conn.commit()
                 st.success("Registered. Please log in.")
