@@ -10,10 +10,10 @@ def render(conn, user_row):
         waist = st.number_input("Waist (cm)", 40.0, 200.0, step=0.5)
     with c2:
         if st.button("Add"):
-            conn.execute("INSERT INTO weights(username, dt, weight, waist) VALUES(?,?,?,?)", (u, date.today().isoformat(), float(w), float(waist)))
+            conn.execute("INSERT INTO progress_logs(username, dt, weight, waist) VALUES(?,?,?,?)", (u, date.today().isoformat(), float(w), float(waist)))
             conn.commit(); st.success("Saved")
 
-    wdf = pd.read_sql_query("SELECT rowid as id, dt, weight, waist FROM weights WHERE username=? ORDER BY dt", conn, params=(u,))
+    wdf = pd.read_sql_query("SELECT id, dt, weight, waist FROM progress_logs WHERE username=? ORDER BY dt", conn, params=(u,))
     if not wdf.empty:
         fig = px.line(wdf, x="dt", y=["weight","waist"], markers=True, title="Weight & Waist Trend")
         fig.update_xaxes(title="Zaman / Timeline")
@@ -21,7 +21,7 @@ def render(conn, user_row):
         st.dataframe(wdf, use_container_width=True)
         del_id = st.number_input("Delete row id", min_value=0, step=1)
         if st.button("Delete") and del_id:
-            conn.execute("DELETE FROM weights WHERE rowid=? AND username=?", (int(del_id), u))
+            conn.execute("DELETE FROM progress_logs WHERE rowid=? AND username=?", (int(del_id), u))
             conn.commit(); st.success("Deleted — refresh the page")
     else:
         st.info("No data yet")
