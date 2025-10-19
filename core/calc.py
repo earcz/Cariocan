@@ -8,26 +8,26 @@ def mifflin_st_jeor(sex: str, weight, height_cm, age):
 
 def _normalize_activity(label: str) -> str:
     if not label:
-        return "Light"
+        return "light"
     s = label.lower()
     # hem kısa hem açıklamalı etiketlerle eşleşir
-    if s.startswith("Sedentary"): return "Sedentary"
-    if s.startswith("Light"):     return "Light"
-    if s.startswith("Moderate"):  return "Moderate"
-    if s.startswith("High"):      return "High"
-    if s.startswith("Very High"): return "Very High"
+    if s.startswith("sedentary"): return "sedentary"
+    if s.startswith("light"):     return "light"
+    if s.startswith("moderate"):  return "moderate"
+    if s.startswith("high"):      return "high"
+    if s.startswith("very high"): return "very_high"
     # Türkçe karşılıklar olursa
-    if "masa" in s or "ofis" in s: return "Sedentary"
-    return "Light"
+    if "masa" in s or "ofis" in s: return "sedentary"
+    return "light"
 
 def activity_factor(label: str) -> float:
     key = _normalize_activity(label)
     factors = {
-        "Sedentary": 1.2,
-        "Light": 1.35,
-        "Moderate": 1.55,
-        "High": 1.75,
-        "Very High": 1.95,
+        "sedentary": 1.2,
+        "light": 1.35,
+        "moderate": 1.55,
+        "high": 1.75,
+        "very_high": 1.95,
     }
     return factors.get(key, 1.35)
 
