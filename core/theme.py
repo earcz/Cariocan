@@ -89,7 +89,7 @@ def apply_minimal_theme():
         color: #374151;
         font-size: 1rem;
         font-weight: 600;
-        margin: 0.4rem 5 0 2rem;
+        margin: 0.4rem -0.05 0 2rem;
         opacity: 0.9;
     }
 
