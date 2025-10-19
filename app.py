@@ -1,4 +1,4 @@
-# app.py — Carioca v28
+# app.py — Carioca v28 fixed
 import streamlit as st
 import sqlite3
 from datetime import datetime
@@ -8,7 +8,6 @@ try:
     from core.theme import render_header
     from core.auth import login_register_ui
 except ModuleNotFoundError:
-    # Streamlit çalışma dizini değişirse güvenli yol
     import sys, os
     sys.path.append(os.path.dirname(__file__))
     from core.theme import render_header
@@ -39,6 +38,17 @@ def get_conn():
         fasting TEXT,
         created_at TEXT
     )""")
+    # ---- eksik sütunlar ekle ----
+    safe_cols = {
+        "target_weight": "REAL",
+        "training_days": "INT",
+        "full_name": "TEXT"
+    }
+    for col, typ in safe_cols.items():
+        try:
+            conn.execute(f"ALTER TABLE users ADD COLUMN {col} {typ}")
+        except:
+            pass
     conn.commit()
     return conn
 
@@ -56,17 +66,22 @@ st.session_state["lang"] = "en" if lang_choice == "English" else "tr"
 
 # ---- LOGIN YOKSA ----
 if not st.session_state["user"]:
-    login_register_ui(conn)   # core.auth içinden
+    login_register_ui(conn)
     st.stop()
 
 # ---- KULLANICIYI ÇEK ----
-row = conn.execute("SELECT username, avatar, lang FROM users WHERE username=?",
-                   (st.session_state["user"],)).fetchone()
+row = conn.execute("""SELECT username, lang, avatar, email, fdc_key, plan_type, meal_structure, age, sex, height_cm,
+                             weight_kg, bodyfat, birthdate, activity, target_weight, training_days, fasting, full_name, waist_cm
+                      FROM users WHERE username=?""", (st.session_state["user"],)).fetchone()
+
 if not row:
     st.error("User not found.")
     st.stop()
 
-username, avatar_data, lang = row
+username = row[0]
+avatar_data = row[2]
+lang = row[1]
+
 render_header(user_name=username, avatar_data=avatar_data)
 
 # ---- LOGOUT (sidebar alt) ----
@@ -83,7 +98,7 @@ from features import profile, nutrition, progress, workout, reminders, summary
 tabs = st.tabs(["Profile", "Nutrition", "Workout", "Progress", "Reminders", "Summary"])
 
 with tabs[0]:
-    profile.render(conn, username)
+    profile.render(conn, row)
 
 with tabs[1]:
     nutrition.render(conn, username)
