@@ -95,7 +95,7 @@ def apply_minimal_theme():
 
     .carioca-header .user-img {
         position: absolute;
-        top: 2rem;
+        top: 2.1rem;
         right: 1.4rem;
         width: 150px;
         height: 150px;
