@@ -1,6 +1,6 @@
 import streamlit as st
 
-def render(conn, user_row):
+def render():
     st.subheader("Reminders")
     water_on = st.toggle("Water")
     posture_on = st.toggle("Posture")
