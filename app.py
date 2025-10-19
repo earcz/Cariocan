@@ -193,4 +193,3 @@ with tabs[4]:
     reminders.render(conn, row)
 with tabs[5]:
     summary.render(conn, row)
-
