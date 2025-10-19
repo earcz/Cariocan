@@ -1,4 +1,4 @@
-# app.py — Carioca v29 (Streamlit 1.39+ compatible, persistent session & language)
+# app.py — Carioca v29.1 (Streamlit 1.39+ compatible, persistent session & language + full DB schema)
 import streamlit as st
 import sqlite3
 import os, sys
@@ -18,6 +18,8 @@ st.set_page_config(page_title="Carioca", page_icon="🌴", layout="wide")
 # --- Database Connection ---
 def get_conn():
     conn = sqlite3.connect("carioca_v28.db", check_same_thread=False)
+
+    # ---- USERS ----
     conn.execute("""CREATE TABLE IF NOT EXISTS users(
         username TEXT PRIMARY KEY,
         pw_hash BLOB,
@@ -38,6 +40,7 @@ def get_conn():
         created_at TEXT
     )""")
 
+    # ---- SAFE EXTRA COLUMNS ----
     safe_cols = {
         "birthdate": "TEXT",
         "target_weight": "REAL",
@@ -49,8 +52,55 @@ def get_conn():
             conn.execute(f"ALTER TABLE users ADD COLUMN {col} {typ}")
         except:
             pass
+
+    # ---- FOOD LOGS ----
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS food_logs(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            dt TEXT,
+            meal TEXT,
+            food_name TEXT,
+            grams REAL,
+            kcal REAL,
+            protein REAL,
+            carbs REAL,
+            fat REAL,
+            sugars REAL,
+            fiber REAL,
+            sodium REAL,
+            salt REAL
+        )
+    """)
+
+    # ---- WORKOUT LOGS ----
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS workout_logs(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            dt TEXT,
+            workout_type TEXT,
+            exercise TEXT,
+            sets INT,
+            reps INT,
+            calories_burned REAL
+        )
+    """)
+
+    # ---- PROGRESS LOGS ----
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS progress_logs(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            dt TEXT,
+            weight REAL,
+            waist REAL
+        )
+    """)
+
     conn.commit()
     return conn
+
 
 conn = get_conn()
 
