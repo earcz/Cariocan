@@ -25,7 +25,7 @@ def apply_minimal_theme():
         z-index: 0 !important;  /* Streamlit toolbar çakışmasını engeller */
     }
     div[data-testid="stAppViewContainer"] > .main {
-        padding-top: 1.5rem !important;  /* toolbar ile header arasında boşluk */
+        padding-top: 2rem !important;  /* toolbar ile header arasında boşluk */
     }
     .block-container {
         padding-top: 0.5rem !important;
