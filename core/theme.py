@@ -20,12 +20,12 @@ def apply_minimal_theme():
         font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
 
-    /* ---- Header yukarı kayma düzeltmesi ---- */
+    /* ---- Header hizalama düzeltmesi ---- */
     header[data-testid="stHeader"] {
-        z-index: 0 !important;
+        z-index: 0 !important;  /* Streamlit toolbar çakışmasını engeller */
     }
     div[data-testid="stAppViewContainer"] > .main {
-        padding-top: 0 !important;
+        padding-top: 1.5rem !important;  /* toolbar ile header arasında boşluk */
     }
     .block-container {
         padding-top: 0.5rem !important;
@@ -54,11 +54,11 @@ def apply_minimal_theme():
     .carioca-header {
         position: relative;
         width: 100%;
-        height: 180px; /* önceki 160’tı – biraz daha yüksek */
+        height: 180px;
         background: rgba(255,255,255,0.92);
         border-radius: 16px;
         overflow: hidden;
-        margin: 1.2rem 0 1.5rem 0; /* üst boşluk eklendi */
+        margin: 2rem 0 1.5rem 0; /* 🔹 Üst boşluk artırıldı */
         border: 1px solid #e5e7eb;
     }
 
@@ -95,11 +95,11 @@ def apply_minimal_theme():
 
     .carioca-header .user-img {
         position: absolute;
-        top: 0.8rem;
+        top: 1.2rem;
         right: 1.4rem;
-        width: 150px;
-        height: 150px;
-        border-radius: 12px; /* dikdörtgen */
+        width: 96px;
+        height: 96px;
+        border-radius: 12px;
         border: 3px solid white;
         box-shadow: 0 4px 10px rgba(0,0,0,0.12);
         object-fit: cover;
@@ -108,7 +108,7 @@ def apply_minimal_theme():
     }
 
     @media (max-width: 768px) {
-        .carioca-header { height: 140px; margin-top: 0.6rem; }
+        .carioca-header { height: 140px; margin-top: 1.2rem; }
         .carioca-header .title { font-size: 2rem; margin-left: 1rem; }
         .carioca-header .subtitle { margin-left: 1rem; }
         .carioca-header .user-img { width: 72px; height: 72px; top: 1rem; }
