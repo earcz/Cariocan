@@ -1,4 +1,4 @@
-# app.py — Carioca v28 fixed
+# app.py — Carioca v28.2
 import streamlit as st
 import sqlite3
 from datetime import datetime
@@ -19,6 +19,7 @@ st.set_page_config(page_title="Carioca", page_icon="🌴", layout="wide")
 # ---- DB ----
 def get_conn():
     conn = sqlite3.connect("carioca_v28.db", check_same_thread=False)
+    # Temel tablo (bazı kolonları bilerek minimum bırakıyoruz; aşağıda güvenli ALTER ile ekleyeceğiz)
     conn.execute("""CREATE TABLE IF NOT EXISTS users(
         username TEXT PRIMARY KEY,
         pw_hash BLOB,
@@ -38,8 +39,9 @@ def get_conn():
         fasting TEXT,
         created_at TEXT
     )""")
-    # ---- eksik sütunlar ekle ----
+    # ---- Eksik olabilecek kolonları güvenli şekilde ekle ----
     safe_cols = {
+        "birthdate": "TEXT",
         "target_weight": "REAL",
         "training_days": "INT",
         "full_name": "TEXT"
@@ -47,7 +49,7 @@ def get_conn():
     for col, typ in safe_cols.items():
         try:
             conn.execute(f"ALTER TABLE users ADD COLUMN {col} {typ}")
-        except:
+        except Exception:
             pass
     conn.commit()
     return conn
@@ -69,10 +71,31 @@ if not st.session_state["user"]:
     login_register_ui(conn)
     st.stop()
 
-# ---- KULLANICIYI ÇEK ----
-row = conn.execute("""SELECT username, lang, avatar, email, fdc_key, plan_type, meal_structure, age, sex, height_cm,
-                             weight_kg, bodyfat, birthdate, activity, target_weight, training_days, fasting, full_name, waist_cm
-                      FROM users WHERE username=?""", (st.session_state["user"],)).fetchone()
+# ---- KULLANICIYI ÇEK (profile.render ile birebir sırada) ----
+row = conn.execute("""
+    SELECT
+      username,       -- 0 (u)
+      lang,           -- 1 (lang)
+      avatar,         -- 2 (avatar)
+      email,          -- 3 (email)
+      fdc_key,        -- 4 (fdc_key)
+      plan_type,      -- 5 (plan_type)
+      meal_structure, -- 6 (meal_structure)
+      age,            -- 7 (age)
+      sex,            -- 8 (sex)
+      height_cm,      -- 9 (height_cm)
+      weight_kg,      --10 (weight_kg)
+      bodyfat,        --11 (bodyfat)
+      birthdate,      --12 (birthdate)
+      activity,       --13 (activity)
+      target_weight,  --14 (target_weight)
+      training_days,  --15 (training_days)
+      fasting,        --16 (fasting)
+      full_name,      --17 (full_name)
+      waist_cm        --18 (waist_cm)
+    FROM users
+    WHERE username=?
+""", (st.session_state["user"],)).fetchone()
 
 if not row:
     st.error("User not found.")
@@ -80,8 +103,6 @@ if not row:
 
 username = row[0]
 avatar_data = row[2]
-lang = row[1]
-
 render_header(user_name=username, avatar_data=avatar_data)
 
 # ---- LOGOUT (sidebar alt) ----
