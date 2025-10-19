@@ -23,9 +23,17 @@ Her dosyada `render(conn, user_row)` fonksiyonu bulunur; `app.py` bu fonksiyonla
 
 ### Yeni Sekme Eklemek
 1. Yeni bir dosya oluştur: `features/new_feature.py`
+
 2. İçine şu yapıyı ekle:
 ```python
 import streamlit as st
 def render(conn, user_row):
     st.subheader("Yeni Sekme")
     st.write("Buraya içerik gelecek.")
+    
+3. app.py içine şu yapıyı ekle:
+from features import new_feature
+...
+tabs = st.tabs([...,"New Feature"])
+with tabs[-1]:
+    new_feature.render(conn, row)
