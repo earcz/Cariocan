@@ -111,7 +111,7 @@ def apply_minimal_theme():
         .carioca-header { height: 140px; margin-top: 1.2rem; }
         .carioca-header .title { font-size: 2rem; margin-left: 1rem; }
         .carioca-header .subtitle { margin-left: 1rem; }
-        .carioca-header .user-img { width: 72px; height: 72px; top: 1rem; }
+        .carioca-header .user-img { width: 120px; height: 120px; top: 1rem; }
     }
     </style>
     """.replace("{rio_img}", _load_rio_base64())
