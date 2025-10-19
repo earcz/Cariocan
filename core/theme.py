@@ -85,11 +85,11 @@ def apply_minimal_theme():
 
     .carioca-header .subtitle {
         position: relative;
-        z-index: 6;
+        z-index: 2;
         color: #374151;
         font-size: 1rem;
         font-weight: 600;
-        margin: 0.4rem 0 0 2rem;
+        margin: 0.4rem 5 0 2rem;
         opacity: 0.9;
     }
 
