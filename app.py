@@ -49,7 +49,7 @@ st.session_state["lang"] = "en" if lang_choice == "English" else "tr"
 
 # ---- LOGIN DURUMU YOKSA ----
 if not st.session_state["user"]:
-    from core.auth import login_register_ui
+    from features.auth import login_register_ui
     login_register_ui(conn)
     st.stop()
 
