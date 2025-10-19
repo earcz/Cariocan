@@ -19,18 +19,24 @@ def apply_minimal_theme():
         color: #222;
         font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-    .block-container {
-        padding: 1.5rem 2rem;
-        border-radius: 18px;
-        background-color: rgba(255,255,255,0.88);
-        backdrop-filter: blur(6px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+
+    /* ---- Header yukarı kayma düzeltmesi ---- */
+    header[data-testid="stHeader"] {
+        z-index: 0 !important;
     }
+    div[data-testid="stAppViewContainer"] > .main {
+        padding-top: 0 !important;
+    }
+    .block-container {
+        padding-top: 0.5rem !important;
+    }
+
     section[data-testid="stSidebar"] {
         background: #ffffff;
         border-right: 1px solid #e5e7eb;
         padding: 1rem 0.8rem !important;
     }
+
     div.stButton > button {
         background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%) !important;
         color: white !important;
@@ -44,16 +50,18 @@ def apply_minimal_theme():
         transform: scale(1.02);
     }
 
+    /* ---- Carioca Header ---- */
     .carioca-header {
         position: relative;
         width: 100%;
-        height: 160px;
+        height: 180px; /* önceki 160’tı – biraz daha yüksek */
         background: rgba(255,255,255,0.92);
         border-radius: 16px;
         overflow: hidden;
-        margin-bottom: 1.5rem;
+        margin: 1.2rem 0 1.5rem 0; /* üst boşluk eklendi */
         border: 1px solid #e5e7eb;
     }
+
     .carioca-header::before {
         content: "";
         position: absolute;
@@ -64,28 +72,31 @@ def apply_minimal_theme():
         opacity: 0.22;
         z-index: 0;
     }
+
     .carioca-header .title {
         position: relative;
         z-index: 2;
         color: #111827;
         font-size: 2.4rem;
         font-weight: 800;
-        margin: 1.1rem 0 0 2rem;
+        margin: 1.2rem 0 0 2rem;
         line-height: 1.1;
     }
+
     .carioca-header .subtitle {
         position: relative;
         z-index: 2;
         color: #374151;
         font-size: 1rem;
         font-weight: 600;
-        margin: 0.3rem 0 0 2rem;
+        margin: 0.4rem 0 0 2rem;
         opacity: 0.9;
     }
+
     .carioca-header .user-img {
         position: absolute;
-        top: 1.1rem;
-        right: 1.2rem;
+        top: 1.2rem;
+        right: 1.4rem;
         width: 96px;
         height: 96px;
         border-radius: 12px; /* dikdörtgen */
@@ -95,11 +106,12 @@ def apply_minimal_theme():
         z-index: 2;
         background: #fff;
     }
+
     @media (max-width: 768px) {
-        .carioca-header { height: 130px; }
+        .carioca-header { height: 140px; margin-top: 0.6rem; }
         .carioca-header .title { font-size: 2rem; margin-left: 1rem; }
         .carioca-header .subtitle { margin-left: 1rem; }
-        .carioca-header .user-img { width: 72px; height: 72px; }
+        .carioca-header .user-img { width: 72px; height: 72px; top: 1rem; }
     }
     </style>
     """.replace("{rio_img}", _load_rio_base64())
