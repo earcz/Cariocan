@@ -1,4 +1,4 @@
-import streamlit as st
+erimport streamlit as st
 from pathlib import Path
 import base64
 
