@@ -1,13 +1,23 @@
+# app.py — Carioca v28
 import streamlit as st
+import sqlite3
 from datetime import datetime
-import sqlite3, json
-from core.theme import render_header
-from features import profile, nutrition, progress, workout, reminders, summary
+
+# ---- doğru importlar ----
+try:
+    from core.theme import render_header
+    from core.auth import login_register_ui
+except ModuleNotFoundError:
+    # Streamlit çalışma dizini değişirse güvenli yol
+    import sys, os
+    sys.path.append(os.path.dirname(__file__))
+    from core.theme import render_header
+    from core.auth import login_register_ui
 
 # ---- SAYFA AYARLARI ----
 st.set_page_config(page_title="Carioca", page_icon="🌴", layout="wide")
 
-# ---- DATABASE ----
+# ---- DB ----
 def get_conn():
     conn = sqlite3.connect("carioca_v28.db", check_same_thread=False)
     conn.execute("""CREATE TABLE IF NOT EXISTS users(
@@ -34,45 +44,42 @@ def get_conn():
 
 conn = get_conn()
 
-# ---- SESSION & LOGIN DURUMU ----
-if "user" not in st.session_state:
-    st.session_state["user"] = None
-if "lang" not in st.session_state:
-    st.session_state["lang"] = "en"
+# ---- SESSION ----
+st.session_state.setdefault("user", None)
+st.session_state.setdefault("lang", "en")
 
-# ---- DİL SEÇİMİ ----
+# ---- DİL SEÇİMİ (sidebar) ----
 st.sidebar.header("🌐 Language / Dil")
 lang_choice = st.sidebar.radio("Select language", ["English", "Türkçe"],
                                index=0 if st.session_state["lang"] == "en" else 1)
-
 st.session_state["lang"] = "en" if lang_choice == "English" else "tr"
 
-# ---- LOGIN DURUMU YOKSA ----
+# ---- LOGIN YOKSA ----
 if not st.session_state["user"]:
-    from features.auth import login_register_ui
-    login_register_ui(conn)
+    login_register_ui(conn)   # core.auth içinden
     st.stop()
 
 # ---- KULLANICIYI ÇEK ----
-row = conn.execute("""SELECT username, avatar, lang FROM users WHERE username=?""",
+row = conn.execute("SELECT username, avatar, lang FROM users WHERE username=?",
                    (st.session_state["user"],)).fetchone()
 if not row:
-    st.error("User not found in database.")
+    st.error("User not found.")
     st.stop()
 
 username, avatar_data, lang = row
 render_header(user_name=username, avatar_data=avatar_data)
 
-# ---- SIDEBAR LOGOUT ----
+# ---- LOGOUT (sidebar alt) ----
 st.sidebar.markdown("---")
 if st.sidebar.button("🚪 Logout"):
-    user_lang = st.session_state["lang"]
+    keep_lang = st.session_state.get("lang", "en")
     st.session_state.clear()
-    st.session_state["lang"] = user_lang
-    st.success("Logged out successfully.")
+    st.session_state["lang"] = keep_lang
     st.rerun()
 
 # ---- SEKMELER ----
+from features import profile, nutrition, progress, workout, reminders, summary
+
 tabs = st.tabs(["Profile", "Nutrition", "Workout", "Progress", "Reminders", "Summary"])
 
 with tabs[0]:
