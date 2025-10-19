@@ -49,7 +49,7 @@ def get_conn():
 conn = get_conn()
 
 # ---- SESSION & URL PARAMS (kalıcı oturum) ----
-params = st.experimental_get_query_params()
+params = st.query_params
 st.session_state.setdefault("user", None)
 st.session_state.setdefault("lang", params.get("lang", ["en"])[0])
 
@@ -96,7 +96,8 @@ full_name = row[17] or ""
 avatar_data = row[2]
 
 # URL paramlarını sabitle (yenilemede oturum kalsın)
-st.experimental_set_query_params(u=username, lang=st.session_state["lang"])
+st.query_params["u"] = username
+st.query_params["lang"] = st.session_state["lang"]
 
 # Header: Carioca + Full Name (subtitle)
 render_header(app_title="Carioca", full_name=full_name, avatar_data=avatar_data)
@@ -107,7 +108,8 @@ if st.sidebar.button("🚪 Logout"):
     keep_lang = st.session_state.get("lang", "en")
     st.session_state.clear()
     # URL paramlarını temizle
-    st.experimental_set_query_params(lang=keep_lang)
+    st.query_params.clear()
+    st.query_params["lang"] = keep_lang
     st.session_state["lang"] = keep_lang
     st.rerun()
 
