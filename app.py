@@ -71,7 +71,6 @@ if new_lang != st.session_state["lang"]:
     if st.session_state.get("user"):
         conn.execute("UPDATE users SET lang=? WHERE username=?", (new_lang, st.session_state["user"]))
         conn.commit()
-        st.experimental_set_query_params(u=st.session_state["user"], lang=new_lang)
     st.rerun()
 
 # ---- LOGIN YOKSA ----
