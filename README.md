@@ -43,3 +43,31 @@ carioca_v27_modular_refactor/
 │ └── README.md
 └── assets/
 └── (optional static files)
+
+---
+
+## ⚙️ Kurulum
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+
+🧩 Modüler Yapı
+
+Carioca üç katmanlıdır:
+
+core/ → temel mantık (DB, hesaplama, stil, kimlik doğrulama)
+
+features/ → uygulama sekmeleri (Profil, Workout, Nutrition vb.)
+
+assets/ → medya & görseller (opsiyonel)
+
+🧠 Katkı ve Geliştirme
+
+Yeni sekme eklemek istersen:
+
+features/ klasörüne yeni bir dosya oluştur (example.py)
+
+İçine render(conn, user_row) fonksiyonu ekle
+
+app.py içindeki tabs dizisine dahil et
+
