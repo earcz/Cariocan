@@ -2,45 +2,35 @@ import streamlit as st
 from pathlib import Path
 import base64
 
-# ---- Genel Ayarlar ----
 ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
 RIO_IMG_PATH = ASSETS_DIR / "Rio.png"
 
-def load_rio_base64():
-    """Rio görselini base64 formatında döndürür."""
+def _load_rio_base64():
     if not RIO_IMG_PATH.exists():
         return ""
     with open(RIO_IMG_PATH, "rb") as f:
         return base64.b64encode(f.read()).decode("utf-8")
 
-# ---- CSS Teması ----
 def apply_minimal_theme():
-    """Uygulamanın genel minimal temasını uygular."""
     css = """
     <style>
     html, body, [class*="stAppViewContainer"], .main, .block-container {
         background-color: #f8fafc !important;
         color: #222;
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     }
-
-    /* Ana container */
     .block-container {
         padding: 1.5rem 2rem;
         border-radius: 18px;
-        background-color: rgba(255,255,255,0.85);
+        background-color: rgba(255,255,255,0.88);
         backdrop-filter: blur(6px);
         box-shadow: 0 4px 16px rgba(0,0,0,0.05);
     }
-
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background: #ffffff;
         border-right: 1px solid #e5e7eb;
         padding: 1rem 0.8rem !important;
     }
-
-    /* Butonlar */
     div.stButton > button {
         background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%) !important;
         color: white !important;
@@ -54,15 +44,15 @@ def apply_minimal_theme():
         transform: scale(1.02);
     }
 
-    /* Header alanı */
     .carioca-header {
         position: relative;
         width: 100%;
         height: 160px;
-        background: rgba(255,255,255,0.85);
+        background: rgba(255,255,255,0.92);
         border-radius: 16px;
         overflow: hidden;
         margin-bottom: 1.5rem;
+        border: 1px solid #e5e7eb;
     }
     .carioca-header::before {
         content: "";
@@ -71,52 +61,58 @@ def apply_minimal_theme():
         background-image: url("data:image/png;base64,{rio_img}");
         background-size: cover;
         background-position: center;
-        opacity: 0.25;
+        opacity: 0.22;
         z-index: 0;
     }
-    .carioca-header h1 {
+    .carioca-header .title {
         position: relative;
         z-index: 2;
         color: #111827;
-        font-size: 2.6rem;
+        font-size: 2.4rem;
         font-weight: 800;
-        margin: 1.2rem 0 0 2rem;
+        margin: 1.1rem 0 0 2rem;
+        line-height: 1.1;
+    }
+    .carioca-header .subtitle {
+        position: relative;
+        z-index: 2;
+        color: #374151;
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0.3rem 0 0 2rem;
+        opacity: 0.9;
     }
     .carioca-header .user-img {
         position: absolute;
-        top: 1.2rem;
-        right: 1.5rem;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
+        top: 1.1rem;
+        right: 1.2rem;
+        width: 96px;
+        height: 96px;
+        border-radius: 12px; /* dikdörtgen */
         border: 3px solid white;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.12);
         object-fit: cover;
+        z-index: 2;
+        background: #fff;
     }
     @media (max-width: 768px) {
-        .carioca-header {
-            height: 120px;
-        }
-        .carioca-header h1 {
-            font-size: 2rem;
-            margin-left: 1rem;
-        }
-        .carioca-header .user-img {
-            width: 60px;
-            height: 60px;
-        }
+        .carioca-header { height: 130px; }
+        .carioca-header .title { font-size: 2rem; margin-left: 1rem; }
+        .carioca-header .subtitle { margin-left: 1rem; }
+        .carioca-header .user-img { width: 72px; height: 72px; }
     }
     </style>
-    """.replace("{rio_img}", load_rio_base64())
+    """.replace("{rio_img}", _load_rio_base64())
     st.markdown(css, unsafe_allow_html=True)
 
-# ---- Header Render ----
-def render_header(user_name: str = "Carioca", avatar_data=None):
-    """Sayfanın üst kısmındaki başlık ve profil fotoğrafı alanı."""
+def render_header(app_title: str = "Carioca", full_name: str = "", avatar_data: str | None = None):
     apply_minimal_theme()
+    name_html = f'<div class="subtitle">{full_name}</div>' if full_name else ""
+    avatar_html = f'<img src="{avatar_data}" class="user-img"/>' if avatar_data else ""
     st.markdown(f"""
     <div class="carioca-header">
-        <h1>{user_name}</h1>
-        {'<img src="'+avatar_data+'" class="user-img"/>' if avatar_data else ''}
+        <div class="title">{app_title}</div>
+        {name_html}
+        {avatar_html}
     </div>
     """, unsafe_allow_html=True)
