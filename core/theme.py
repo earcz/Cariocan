@@ -97,7 +97,7 @@ def apply_minimal_theme():
         position: absolute;
         top: 1.2rem;
         right: 1.4rem;
-        width: 96px;
+        width: 120px;
         height: 120px;
         border-radius: 12px; /* dikdörtgen */
         border: 3px solid white;
