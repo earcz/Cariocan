@@ -54,7 +54,7 @@ def apply_minimal_theme():
     .carioca-header {
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 220px;
         background: rgba(255,255,255,0.92);
         border-radius: 16px;
         overflow: hidden;
