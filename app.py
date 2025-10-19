@@ -190,7 +190,7 @@ with tabs[2]:
 with tabs[3]:
     progress.render(conn, username)
 with tabs[4]:
-    reminders.render(conn, username)
+    reminders.render(conn, row)
 with tabs[5]:
-    summary.render(conn, username)
+    summary.render(conn, row)
 
