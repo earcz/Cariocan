@@ -43,9 +43,9 @@ def login_register_ui(conn):
             st.warning("Fill required fields")
         else:
             try:
-                conn.execute("""INSERT INTO users(username, pw_hash, lang, theme, fdc_key, created_at)
+                conn.execute("""INSERT INTO users(username, pw_hash, lang, fdc_key, created_at)
                                 VALUES(?,?,?,?,?,?)""",
-                             (ru, hash_pw(rp), "en", "tropical", DEFAULT_FDC, datetime.utcnow().isoformat()))
+                             (ru, hash_pw(rp), "en", DEFAULT_FDC, datetime.utcnow().isoformat()))
                 conn.commit()
                 st.success("Registered. Please log in.")
             except sqlite3.IntegrityError:
