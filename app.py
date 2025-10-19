@@ -1,33 +1,77 @@
 import streamlit as st
-from core import db, theme, auth
-from features import profile, deficit, nutrition, workout, progress, reminders, summary
+from core import theme
+from features import profile, nutrition, workout, progress, summary
+import sqlite3
 
+# ---- PAGE CONFIG ----
 st.set_page_config(page_title="Carioca", page_icon="🌴", layout="wide")
-theme.apply_minimal_theme()
-conn = db.get_conn()
 
-if "user" not in st.session_state:
-    auth.login_register_ui(conn)
+# ---- THEME ----
+theme.apply_minimal_theme()
+
+# ---- DB CONNECTION ----
+@st.cache_resource
+def get_conn():
+    conn = sqlite3.connect("carioca_v28.db", check_same_thread=False)
+    return conn
+
+conn = get_conn()
+
+# ---- SESSION PERSISTENCE ----
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+if "username" not in st.session_state:
+    st.session_state["username"] = None
+if "avatar" not in st.session_state:
+    st.session_state["avatar"] = None
+if "language" not in st.session_state:
+    st.session_state["language"] = "en"
+
+# ---- SIDEBAR ----
+with st.sidebar:
+    st.markdown("### 🌍 Language / Dil")
+    lang = st.radio("", ["English", "Türkçe"], horizontal=True,
+                    index=0 if st.session_state["language"] == "en" else 1)
+    st.session_state["language"] = "en" if lang == "English" else "tr"
+
+    st.markdown("---")
+    if st.button("🚪 Logout"):
+        st.session_state["logged_in"] = False
+        st.session_state["username"] = None
+        st.rerun()
+
+# ---- LOGIN MOCK (örnek) ----
+if not st.session_state["logged_in"]:
+    st.markdown("### 🔑 Login Simulation")
+    user_input = st.text_input("Username", "")
+    if st.button("Login"):
+        if user_input:
+            st.session_state["logged_in"] = True
+            st.session_state["username"] = user_input
+            st.session_state["avatar"] = None
+            st.rerun()
     st.stop()
 
-user = st.session_state["user"]
-row = conn.execute("""SELECT username, lang, theme, avatar, email, fdc_key, plan_type, meal_structure, age, sex, height_cm, weight_kg,
-                             bodyfat, birthdate, activity, target_weight, training_days, fasting, full_name, waist_cm
-                      FROM users WHERE username=?""", (user,)).fetchone()
+# ---- HEADER ----
+theme.render_header(st.session_state["username"], st.session_state["avatar"])
 
-st.session_state.setdefault("theme", row[2] or "tropical")
-theme.header("Carioca", subtitle=row[18] or "Personalized plan engine • Theme toggle • OFF + FDC", avatar_b64=row[3], theme=st.session_state["theme"])
+# ---- TABS ----
+tabs = st.tabs([
+    "Profile", "Nutrition", "Workout", "Progress", "Summary"
+])
 
-if st.sidebar.button("Logout"):
-    st.session_state.clear(); st.rerun()
-picked_theme = st.sidebar.radio("Theme", ["tropical","minimal"], index=0 if st.session_state["theme"]=="tropical" else 1)
-st.session_state["theme"] = picked_theme
+# ---- FEATURE PAGES ----
+with tabs[0]:
+    profile.render(conn, st.session_state["username"], st.session_state["language"])
 
-tabs = st.tabs(["Profile", "Deficit Calc", "Nutrition", "Workout", "Progress", "Reminders", "Summary"])
-with tabs[0]: profile.render(conn, row)
-with tabs[1]: deficit.render(row)
-with tabs[2]: nutrition.render(conn, row)
-with tabs[3]: workout.render(conn, row)
-with tabs[4]: progress.render(conn, row)
-with tabs[5]: reminders.render()
-with tabs[6]: summary.render(conn, row)
+with tabs[1]:
+    nutrition.render(conn, st.session_state["username"], st.session_state["language"])
+
+with tabs[2]:
+    workout.render(conn, st.session_state["username"], st.session_state["language"])
+
+with tabs[3]:
+    progress.render(conn, st.session_state["username"], st.session_state["language"])
+
+with tabs[4]:
+    summary.render(conn, st.session_state["username"], st.session_state["language"])
