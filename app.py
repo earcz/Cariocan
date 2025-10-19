@@ -3,7 +3,7 @@ from core import db, theme, auth
 from features import profile, deficit, nutrition, workout, progress, reminders, summary
 
 st.set_page_config(page_title="Carioca", page_icon="🌴", layout="wide")
-theme.apply_base_bg()
+theme.apply_minimal_theme()
 conn = db.get_conn()
 
 if "user" not in st.session_state:
